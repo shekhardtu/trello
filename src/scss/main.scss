@@ -9,6 +9,12 @@ html {
   background-color: #fff;
 }
 
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
 body,
 button,
 html,
@@ -87,10 +93,7 @@ body {
   margin-top: 40px;
 }
 
-.ticket {
-}
-
-#trello-list-title-input {
+#list__input {
   width: 100%;
   height: 22px;
   margin-bottom: 5px;
@@ -100,7 +103,7 @@ body {
 
 .list {
   background: #e5eff5;
-  padding: 10px 10px;
+  padding: 10px 15px;
   margin-right: 20px;
   border-radius: 3px;
   -moz-box-sizing: border-box;
@@ -123,6 +126,7 @@ body {
   width: 270px;
   max-width: 270px;
   cursor: pointer;
+  transition: all 2s ease-out; // note that we're transitioning flex, not height!
   &-title {
     min-height: 19px;
 
@@ -130,6 +134,7 @@ body {
     line-height: 18px;
     font-weight: bold;
     color: #172b4d;
+    margin: 10px 0;
   }
 
   &-cards {
@@ -139,32 +144,44 @@ body {
     flex: 1 1 auto;
     overflow-y: auto;
     overflow-x: hidden;
-    margin: 0 4px;
-    padding: 0 4px;
+    transition: all 2s ease-out; // note that we're transitioning flex, not height!
   }
 }
 
-.card-form {
+.card-form,
+.list-form {
+  transition: all 2s ease-out;
   &__input {
-    width: 100%;
-    margin-bottom: 4px;
+    width: 98.2%;
     overflow: hidden;
     word-wrap: break-word;
     resize: none;
-    height: 60px;
+    height: 36px;
     border: 1px solid #ddd;
+    // border: none;
     box-shadow: none;
+    border-bottom: none;
+    font-size: 16px;
+    border-radius: 3px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
   &__submit {
     width: 100%;
-    height: 30px;
-    font-size: 20px;
 
-    border: 1px solid #f44c0e;
+    font-size: 16px;
+
     color: #fff;
-    background: tomato;
-    padding: 10px 20px;
+    background: #0079dd70;
+    padding: 8px 20px;
     border-radius: 3px;
+    transition: all 0.5s ease-in;
+    cursor: pointer;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    &:hover {
+      background: #0079dd;
+    }
   }
 }
 
@@ -179,6 +196,7 @@ body {
   position: relative;
   overflow: auto;
   padding: 6px 8px 4px;
+  transition: all 2s ease-out;
 }
 
 .card div {

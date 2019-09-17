@@ -1,4 +1,4 @@
-(function() {
+const trello = (function() {
   var createCard = {
     windowOverlay: document.getElementById("container-main"),
     node: document.getElementById("card-edit"),
@@ -18,13 +18,13 @@
     createCard.windowOverlay.style.display = "none";
   };
 
-  //This function will show the edited text on the card on submit
+  //This method will show the edited text on the card on submit
   createCard.show = function() {
     createCard.windowOverlay.style.display = "block";
     createCard.node.style.display = "block";
   };
 
-  //This function will submit the edited text
+  //This method will submit the edited text
   createCard.submit = function(evt) {
     evt.preventDefault();
     var title = createCard.titleNode.value.trim();
@@ -40,16 +40,16 @@
   };
 
   /*
-This function deletes the card
-*/
+  This method deletes the card
+  */
   var cardDeleteTrello = {};
   var currentBoard;
 
   cardDeleteTrello.delete = function() {
     var index = currentBoard.cards[createCard.card.id].index;
 
-    currentBoard.unregisterCard(createCard.card);
-    currentBoard.reregisterSubsequent(createCard.card.list, index + 1, -1);
+    currentBoard.removeCard(createCard.card);
+    currentBoard.addNewCard(createCard.card.list, index + 1, -1);
 
     createCard.card.list.cardsNode.removeChild(createCard.card.node);
     createCard.card.list.cards.splice(index, 1);
@@ -59,7 +59,7 @@ This function deletes the card
   };
 
   /*
-This function is called to build the card form
+This method is called to build the card form
 */
   function buildCardTitleForm() {
     var node = document.createElement("form");
@@ -72,28 +72,26 @@ This function is called to build the card form
     return node;
   }
   /*
-  This function will build the form for list,It is called by addList
+  This method will build the form for list,It is called by addList
   */
   function buildListTitleForm() {
     var node = document.createElement("form");
-    node.className = "list__form";
+    node.className = "list-form";
     node.innerHTML =
-      '<div class="newitem-title-wrapper">' +
-      '<input id="trello-list-title-input" type="text">' +
-      '<input id="trello-list-title-submit" type="submit" value="Save">' +
+      '<div class="list-form--wrpr">' +
+      '<input class="list-form__input" type="text">' +
+      '<input class="list-form__submit" type="submit" value="Save">' +
       "</div>";
     node.style.display = "none";
     return node;
   }
 
-  //This function will called on adding the list on the board
+  //This method will called on adding the list on the board
   function addListTrello(board) {
     return function() {
-      var titleInput = document.getElementById("trello-list-title-input");
+      var titleInput = document.querySelector(".list-form__input");
 
-      document.getElementById(
-        "trello-list-title-submit"
-      ).onclick = titleButtonClick;
+      document.querySelector(".list-form__submit").onclick = titleButtonClick;
       board.titleFormNode.style.display = "block";
       titleInput.focus();
 
@@ -153,7 +151,7 @@ This function is called to build the card form
     this.node.appendChild(this.listsNode);
   };
 
-  Board.prototype.registerCard = function(card, index) {
+  Board.prototype.createCard = function(card, index) {
     this.cards[card.id] = {
       card: card,
       list: card.list,
@@ -161,13 +159,13 @@ This function is called to build the card form
     };
   };
 
-  Board.prototype.reregisterSubsequent = function(list, index, shift) {
+  Board.prototype.addNewCard = function(list, index, shift) {
     for (var i = index; i < list.cards.length; ++i) {
-      this.registerCard(list.cards[i], i + shift);
+      this.createCard(list.cards[i], i + shift);
     }
   };
 
-  Board.prototype.unregisterCard = function(card) {
+  Board.prototype.removeCard = function(card) {
     delete this.cards[card.id];
   };
 
@@ -207,7 +205,7 @@ This function is called to build the card form
 
       this.titleNode.draggable = true;
       this.cards = [dummyCard];
-      board.registerCard(this.cards[0], 0);
+      board.createCard(this.cards[0], 0);
 
       // new card title form
       this.titleFormNode = buildCardTitleForm();
@@ -291,7 +289,7 @@ This function is called to build the card form
   }
 
   /*
-This function is constructor function for card
+This methods is constructor function for card
 */
   function Card(list, title) {
     this.id = list.board.getNextId();
@@ -306,8 +304,8 @@ This function is constructor function for card
     this.titleNode.appendChild(document.createTextNode(this.title));
 
     /*
-These four function will work on drag and drop of the card on another list
-*/
+    These four methods will work on drag and drop of the card on another list
+    */
     this.node.ondragstart = (function(id) {
       return function(evt) {
         dragTracker.id = id;
@@ -335,14 +333,14 @@ These four function will work on drag and drop of the card on another list
         source.list.cardsNode.removeChild(source.card.node);
         target.list.cardsNode.insertBefore(source.card.node, target.card.node);
 
-        board.reregisterSubsequent(source.list, source.index + 1, -1);
+        board.addNewCard(source.list, source.index + 1, -1);
         source.list.cards.splice(source.index, 1);
 
-        board.reregisterSubsequent(target.list, target.index + 1, 1);
+        board.addNewCard(target.list, target.index + 1, 1);
         target.list.cards.splice(target.index + 1, 0, source.card);
 
         source.card.list = target.list;
-        board.registerCard(source.card, target.index + 1);
+        board.createCard(source.card, target.index + 1);
         evt.preventDefault();
       };
     })(list.board);
@@ -368,10 +366,10 @@ This function will add the Card in the list
   function addCardTrello(list) {
     return function() {
       var titleTextarea = list.titleFormNode.getElementsByClassName(
-        "trello-new-card-title-input"
+        "card-form__input"
       )[0];
       list.titleFormNode.getElementsByClassName(
-        "trello-new-card-title-submit"
+        "card-form__submit"
       )[0].onclick = titleSubmit;
       list.titleFormNode.style.display = "block";
       titleTextarea.focus();
@@ -388,7 +386,7 @@ This function will add the Card in the list
         }
 
         card = new Card(list, title);
-        list.board.registerCard(card, list.cards.length);
+        list.board.createCard(card, list.cards.length);
         list.cardsNode.insertBefore(
           card.node,
           list.cards[list.cards.length - 1].node
@@ -398,8 +396,7 @@ This function will add the Card in the list
     };
   }
 
-  //Onloading the document render the board.The code starts from here
-  document.body.onload = function() {
+  var init = function() {
     var title = "Business Launch",
       board = new Board(title);
 
@@ -407,4 +404,12 @@ This function will add the Card in the list
     document.getElementById("sprint").appendChild(board.node);
     currentBoard = board;
   };
+
+  return {
+    init: init,
+  };
 })();
+
+//Onloading the document render the board.The code starts from here
+
+document.addEventListener("DOMContentLoaded", trello.init);
