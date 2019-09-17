@@ -1,0 +1,45 @@
+{
+  "name": "scss-jquery-boilerplate",
+  "version": "1.0.0",
+  "description": "A basic boilerplate with webpack, jquery and sass preprocessor. It can serve for quick start your interview assignment or a prototype of an application. Not recommended for production applications.",
+  "main": "./src/index.html",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0",
+    "start": "webpack-dev-server --env.NODE_ENV=development --hot",
+    "build": "webpack --env.NODE_ENV=production --config  webpack.config.js"
+  },
+  "keywords": [
+    "Basic",
+    "boilerplate",
+    "interview",
+    "assignment",
+    "kit",
+    "prototype",
+    "kit"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harishekhar/scss-jquery-boilerplate.git"
+  },
+  "author": "Hari Shekhar",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.4",
+    "babel-preset-env": "^1.7.0",
+    "css-loader": "^2.0.2",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.5.0",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.28.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "dependencies": {
+    "jquery": "^3.3.1"
+  }
+}
